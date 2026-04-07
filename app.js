@@ -37,7 +37,7 @@ main()
   .catch(err => console.log(err));
 
 async function main() {
-  await mongoose.connect('mongodb://127.0.0.1:27017/BaseOps');
+  await mongoose.connect(process.env.ATLASDB_URL);
   await createAdminIfNotExists();
 }
 
@@ -55,7 +55,7 @@ app.use(methodOverride("_method"));
 
 
 const sessionOptions = {
-  secret: 'your-secret-key',
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: true,
   
