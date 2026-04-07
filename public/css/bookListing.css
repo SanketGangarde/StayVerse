@@ -1,0 +1,139 @@
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f8f9fa;
+  color: #333;
+}
+
+.booking-container {
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 1100px;
+  margin: 40px auto;
+  background-color: #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.booking-left,
+.booking-right {
+  flex: 1;
+  padding: 30px;
+  box-sizing: border-box;
+}
+
+.booking-left {
+  background-color: #fefefe;
+  border-right: 1px solid #eee;
+}
+
+.booking-right {
+  background-color: #fcfcfc;
+}
+
+.booking-rare-find {
+  background-color: #fff4e6;
+  border: 1px solid #ffc107;
+  padding: 15px 20px;
+  border-radius: 8px;
+  margin-bottom: 25px;
+  font-size: 15px;
+}
+
+.booking-rare-find strong {
+  color: #d35400;
+}
+
+.booking-section {
+  margin-bottom: 30px;
+}
+
+.booking-section-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #343a40;
+  margin-bottom: 10px;
+  border-bottom: 2px solid #e9ecef;
+  padding-bottom: 5px;
+}
+
+.booking-qr-box {
+  background-color: #f1f3f5;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.booking-qr-box img {
+  width: 200px;
+  height: 200px;
+  margin-bottom: 15px;
+  border-radius: 5px;
+}
+
+.booking-qr-box p {
+  margin: 6px 0;
+  font-size: 15px;
+}
+
+.booking-price-details {
+  font-size: 16px;
+  background-color: #e9f7ef;
+  padding: 20px;
+  border-radius: 10px;
+  color: #155724;
+}
+
+.booking-price-details p {
+  margin: 10px 0;
+}
+
+.booking-total {
+  font-size: 18px;
+  font-weight: bold;
+  color: #000;
+  margin-top: 15px;
+}
+
+@media (max-width: 768px) {
+  .booking-container {
+    flex-direction: column;
+    box-shadow: none;
+  }
+
+  .booking-left,
+  .booking-right {
+    border: none;
+    padding: 20px;
+  }
+
+  .booking-qr-box img {
+    width: 150px;
+    height: 150px;
+  }
+}
+
+#btnConfirm{
+  background-color: #28a745; /* Bootstrap green */
+  color: white;
+  padding: 0.6em 1.2em;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+#btnConfirm:hover {
+  background-color: #218838;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+#btnConfirm:active {
+  background-color: #1e7e34;
+}
+
+

@@ -1,0 +1,54 @@
+<% layout("/layouts/boilerplate") %>
+<body>
+
+   <div class="booking-container">
+  <!-- Left Side -->
+  <div class="booking-left">
+    <div class="booking-rare-find">
+      <strong>🔺 This is a rare find.</strong><br/>
+      <i><%= listing.title %> </i>place is usually booked.
+    </div>
+
+    <div class="booking-section">
+      <div class="booking-section-title">Your Trip</div>
+      <p><strong>Dates:</strong> <%= formattedRange %> </p>
+      <p><strong>Guests:</strong> <%= guestCount %> guest</p>
+    </div>
+
+    <div class="booking-section">
+      <div class="booking-section-title">Payment</div>
+      <div class="booking-qr-box">
+        <img src="/images/upi.jpeg" alt="QR Code">
+        
+        <p><strong>Amount:</strong> ₹<%=  (((listing.price * nightCount) * 0.18)+ listing.price * nightCount).toLocaleString("en-IN") %></p>
+        <p> After payment, your booking request will be sent automatically.</p>
+        <p><em>Note: Complete the payment within 5 minutes to hold your reservation.</em></p>
+
+        <form action="/confirm-payment" method="GET">
+           <button id="btnConfirm" type="submit"> I’ve Paid</button>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Side -->
+  <div class="booking-right">
+    <div class="booking-section-title"><%= listing.title %></div>
+    <p>Entire rental unit<br/>
+      • Superhost</p>
+
+    <div class="booking-price-details">
+      <p><%= nightCount %> nights × ₹<%= listing.price.toLocaleString("en-IN") %> → ₹ <%= (listing.price * nightCount).toLocaleString("en-IN") %></p>
+      <p>Taxes ( 18% GST ) : → ₹ <%= ((listing.price * nightCount) * 0.18).toLocaleString("en-IN") %></p>
+      <div class="booking-total">Total (INR): ₹ <%=  (((listing.price * nightCount) * 0.18)+ listing.price * nightCount).toLocaleString("en-IN") %> </div>
+      
+    </div>
+  </div>
+</div>
+
+
+
+    
+</body>
+

@@ -1,0 +1,77 @@
+<nav class="navbar bg-body-light border-bottom sticky-top">
+
+  <div class="container-fluid">
+
+    <!-- LOGO -->
+    <a class="navbar-brand" href="/listings">
+      <i class="fa-solid fa-compass"></i>
+    </a>
+
+    <!-- RIGHT SIDE -->
+    <div class="d-flex align-items-center ms-auto position-relative">
+
+      <% if(!currUser) { %>
+        <a class="nav-link me-3" href="/login">Become a host</a>
+      <% } %>
+
+      <% if(currUser) { %>
+
+        <!-- CREATE LISTING (hide if already on that page) -->
+        <% if(currentPath !== "/listings/new") { %>
+          <form method="GET" action="/listings/new" class="me-2">
+            <button class="menu-item">Create Listing</button>
+          </form>
+        <% } %>
+
+      <% } %>
+
+      <!-- HAMBURGER -->
+      <button id="menuBtn" class="border-0 bg-transparent">
+        <i class="fa-solid fa-bars" style="color:black; font-size:20px;"></i>
+      </button>
+
+      <!-- DROPDOWN -->
+      <div id="menuBox" class="menu-box d-none">
+
+        <% if(!currUser) { %>
+          <a href="/login" class="menu-item">Login</a>
+        <% } %>
+
+        <% if(currUser) { %>
+          <a href="/logout" class="menu-item">Logout</a>
+
+          <a href="/dashboard" class="menu-item">Dashboard</a>
+        <% } %>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</nav>
+
+<!-- SEARCHBAR -->
+<% if (typeof showSearchbar === 'undefined' || showSearchbar) { %>
+  <div class="container-fluid pt-2">
+    <%- include("./searchbar.ejs") %>
+  </div>
+<% } %>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const btn = document.getElementById("menuBtn");
+  const menu = document.getElementById("menuBox");
+
+  btn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    menu.classList.toggle("d-none");
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!menu.contains(e.target)) {
+      menu.classList.add("d-none");
+    }
+  });
+});
+</script>

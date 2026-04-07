@@ -1,0 +1,192 @@
+<% layout("/layouts/dashboard") %>
+
+<div class="main">
+
+    <!-- PROFILE -->
+    <div class="profile">
+        <div class="avatar">
+            <%= user.username.charAt(0).toUpperCase() %>
+        </div>
+
+        <div>
+            <h2>Welcome back, <%= user.username %>.</h2>
+            <p style="color:#777;">Member since 2024</p>
+
+            <div class="stats">
+                <div class="stat-box">
+                    Total Trips <br>
+                    <strong><%= myBookings.length %></strong>
+                </div>
+
+                <div class="stat-box">
+                    Listings <br>
+                    <strong><%= listings.length %></strong>
+                </div>
+
+                <div class="stat-box">
+                    <span id="statLabel">Revenue</span> <br>
+                    <strong id="statValue">₹<%= totalRevenue %></strong>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOGGLE BUTTONS -->
+    <div class="filters">
+        <button onclick="showTab('trips')" class="active" id="tripsBtn">Your Trips</button>
+        <button onclick="showTab('listings')" id="listingsBtn">Your Listings</button>
+    </div>
+
+    <!-- ===================== -->
+    <!-- YOUR TRIPS (GUEST UI) -->
+    <!-- ===================== -->
+    <div id="tripsSection">
+
+        <div class="grid">
+
+            <% myBookings.forEach(booking => { %>
+
+                <% 
+                    let status="";
+                    const today=new Date();
+
+                    if(booking.checkin > today) status="upcoming";
+                    else if(booking.checkout >= today) status="ongoing";
+                    else status="completed";
+                %>
+
+                <div class="card" data-status="<%= status %>">
+
+                    <a href="/listings/<%= booking.listing._id %>" class="image-link">
+                        <img src="<%= booking.listing.images?.[0]?.url || 'https://via.placeholder.com/300' %>">
+                    </a>
+
+                    <div class="card-body">
+
+                        <div>
+                            <span class="status <%= status %>"><%= status.toUpperCase() %></span>
+
+                            <h3 style="font-size:small;"><%= booking.listing.title %></h3>
+
+                            <p class="info">
+                                <%= new Date(booking.checkin).toDateString() %> —
+                                <%= new Date(booking.checkout).toDateString() %>
+                            </p>
+
+                            <p class="info">
+                                <%= booking.guests %> Guests • <%= booking.nights %> Nights
+                            </p>
+
+                            <p><strong>₹<%= booking.amountPaid %></strong></p>
+                        </div>
+
+                        <div class="actions">
+                            <a href="/listings/<%= booking.listing._id %>" class="btn primary">
+                                View
+                            </a>
+
+                            <% if(status==="upcoming"){ %>
+                                <form action="/bookings/<%= booking._id %>?_method=DELETE" method="POST">
+                                    <button class="btn secondary">Cancel</button>
+                                </form>
+                            <% } else if(status==="ongoing"){ %>
+                                <button class="btn secondary" disabled>In Progress</button>
+                            <% } else { %>
+                                <a href="/listings/<%= booking.listing._id %>" class="btn primary">
+                                    Rate
+                                </a>
+                            <% } %>
+                        </div>
+
+                    </div>
+                </div>
+
+            <% }) %>
+
+        </div>
+    </div>
+
+    <!-- ===================== -->
+    <!-- YOUR LISTINGS (HOST UI) -->
+    <!-- ===================== -->
+    <div id="listingsSection" style="display:none;">
+
+        <h3 style="margin:20px 0;">Your Listings</h3>
+
+        <div class="grid">
+
+            <% listings.forEach(listing => { %>
+
+                <div class="card">
+
+                    <a href="/listings/<%= listing._id %>" class="image-link">
+                        <img src="<%= listing.images?.[0]?.url || 'https://via.placeholder.com/300' %>">
+                    </a>
+
+                    <div class="card-body">
+
+                        <div>
+                            <h3 style="font-size:small;"><%= listing.title %></h3>
+                            <p class="info"><%= listing.location %></p>
+                            <p><strong>₹<%= listing.price %></strong> / night</p>
+                        </div>
+
+                        <div class="actions">
+
+                            <a href="/listings/<%= listing._id %>" class="btn primary">View</a>
+
+                            <a href="/listings/<%= listing._id %>/edit" class="btn secondary">Edit</a>
+
+                            <form action="/listings/<%= listing._id %>?_method=DELETE" method="POST"
+                                onsubmit="return confirm('Do you want to delete this listing?');">
+                                <button class="btn secondary">Delete</button>
+                            </form>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            <% }) %>
+
+        </div>
+
+    </div>
+
+</div>
+<script>
+function showTab(tab) {
+    const trips = document.getElementById("tripsSection");
+    const listings = document.getElementById("listingsSection");
+
+    const tripsBtn = document.getElementById("tripsBtn");
+    const listingsBtn = document.getElementById("listingsBtn");
+
+    const statLabel = document.getElementById("statLabel");
+    const statValue = document.getElementById("statValue");
+
+    if (tab === "trips") {
+        trips.style.display = "block";
+        listings.style.display = "none";
+
+        tripsBtn.classList.add("active");
+        listingsBtn.classList.remove("active");
+
+        // ✅ Change to SPENT
+        statLabel.innerText = "Total Spent";
+        statValue.innerText = "₹<%= totalSpent %>";
+
+    } else {
+        trips.style.display = "none";
+        listings.style.display = "block";
+
+        listingsBtn.classList.add("active");
+        tripsBtn.classList.remove("active");
+
+        
+        statLabel.innerText = "Revenue";
+        statValue.innerText = "₹<%= totalRevenue %>";
+    }
+}
+</script>

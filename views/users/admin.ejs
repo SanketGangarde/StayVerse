@@ -1,0 +1,67 @@
+<% layout("/layouts/boilerplate") %>
+<div>
+   
+
+        
+            <h2 class="text-center mt-3 mb-4">Admin Dashboard</h2>
+        
+
+    
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Booking ID</th>
+                <th>Listing Name</th>
+                <th>Listing Room Number</th>
+                <th>User Name</th>
+                <th>Booking Checkin Date</th>
+                <th>Booking Checkout Date</th>
+                <th>Status</th>
+
+            </tr>
+        </thead>
+        <tbody>
+<tbody>
+<% allBookings.slice().reverse().forEach(booking => { %>
+
+<tr>
+    <td><%= booking._id %></td>
+
+    <td>
+        <% if (booking.listing) { %>
+            <%= booking.listing.title %>
+        <% } else { %>
+            <span class="text-danger">Listing Deleted</span>
+        <% } %>
+    </td>
+
+    <td>
+        <% if (booking.listing) { %>
+            <%= booking.listing.roomNumber %>
+        <% } else { %>
+            -
+        <% } %>
+    </td>
+
+    <td><%= booking.user ? booking.user.username : "User Deleted" %></td>
+
+    <td><%= booking.checkin.toLocaleDateString() %></td>
+    <td><%= booking.checkout.toLocaleDateString() %></td>
+
+    <td>
+        <% if (booking.status === "Upcoming") { %>
+            <span class="badge bg-warning">Upcoming</span>
+        <% } else if (booking.status === "Ongoing") { %>
+            <span class="badge bg-success">Ongoing</span>
+        <% } else { %>
+            <span class="badge bg-secondary">Completed</span>
+        <% } %>
+    </td>
+
+</tr>
+
+<% }) %>
+</tbody>
+    </table>
+</div>

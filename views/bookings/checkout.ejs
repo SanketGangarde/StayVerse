@@ -1,0 +1,43 @@
+<% layout("/layouts/boilerplate") %>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<div class="container mt-5 text-center">
+  <h3>Confirming your booking…</h3>
+  <p>Please do not refresh</p>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const options = {
+      key: "<%= razorpayKey %>",
+      amount: "<%= order.amount %>",
+      currency: "INR",
+      name: "Stay Booking",
+      description: "<%= searchData.nights %> night stay",
+      order_id: "<%= order.id %>",
+      handler: async function (response) {
+        const res = await fetch(
+          "/listings/<%= listing._id %>/book/verify-payment",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify(response)
+          }
+        );
+
+        const result = await res.json();
+        if (result.success) {
+          window.location.href = "/bookings/success";
+        } else {
+          alert("Payment verification failed");
+        }
+      },
+      theme: { color: "#dc3545" }
+    };
+
+    const rzp = new Razorpay(options);
+    rzp.open();
+  });
+</script>

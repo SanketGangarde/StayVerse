@@ -1,0 +1,743 @@
+<% layout("/layouts/boilerplate") %>
+
+<script>
+  window.mapToken = '<%- process.env.MAP_TOKEN %>';
+  window.listing = <%- JSON.stringify(listing) %>;
+</script>
+
+
+
+
+
+
+<body>
+
+  
+    <div class="row">
+
+           <h2><b>  <%= listing.title %> </b> </h2>
+
+        
+
+            <div class="card col-11  show-card listing-card" >
+                <br>
+
+                <!-- <div class="listing-gallery">
+                    <div class="large-image " >
+
+                      <% if(listing.images.length < 2){ %> 
+                                <img src="<%= listing.images[0].url %>" alt="Main Image" id="showImage">
+                      <% }else { %> 
+
+                                <img src="<%= listing.images[0].url %>" alt="Main Image" >
+                        <% } %>        
+
+                                </div>
+
+                                <div class="small-images-grid">
+                                    <% for (let i = 1; i <= 4 && i < listing.images.length; i++) { %>
+                                    <div class="small-image">
+                                        <img src="<%= listing.images[i].url %>" alt="Image <%= i + 1 %>">
+                                        <% if (i === 4 && listing.images.length > 5) { %>
+                                        <div class="overlay-button">
+                                            <button onclick="openGallery(<%= JSON.stringify(listing.images)  %>)">Show all photos</button> 
+                                        </div>
+                                        <% } %>
+                                    </div>
+                                    <% } %>
+                                </div>
+                            
+                </div> -->
+
+                <div class="listing-gallery">
+                    <div class="large-image">
+                        <% if (listing.images.length < 2) { %> 
+                        <img src="<%= listing.images[0].url %>" alt="Main Image" id="showImage">
+                        <% } else { %> 
+                        <img src="<%= listing.images[0].url %>" alt="Main Image">
+                        <% } %>        
+                    </div>
+
+                    <div class="small-images-grid ">
+                        <% const lastIndex = Math.min(5, listing.images.length) - 1; %>
+                        <% for (let i = 1; i <= lastIndex; i++) { %>
+                            <div class="small-image image-wrapper">
+                                <img src="<%= listing.images[i].url %>" alt="Image <%= i + 1 %>">
+
+                                <% if (i === lastIndex && listing.images.length > 1) { %>
+                                <div class="overlay-button">
+                                    <button onclick="openGallery(<%= JSON.stringify(listing.images) %>)">
+                                    See photos
+                                    </button>
+                                </div>
+                                <% } %>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+
+
+
+                
+
+
+
+                
+
+
+
+
+
+
+                <div class="card-body">
+
+                    
+
+                        <p class="card-text">Owned by : <i> <b> <%= listing.owner.username %> </b> </i> </p>
+
+                        <p class="card-text">Room Number: <i> <b> <%= listing.roomNumber %> </b> </i> </p>
+
+                        <p class="card-text">  </p>
+
+                        <p class="card-text"><%= listing.description %></p>
+
+                        <p class="card-text">
+                               
+                            <% if (listing.price !== null) { %>
+                              &#x20b9 Price : <%= listing.price.toLocaleString("en-IN") %>
+                              <% } else { %>
+                              &#x20b9 Price : Not Available
+                           <% } %>
+  
+                        </p>
+
+                        <p class="card-text"><%= listing.location %></p>
+                        
+                        <p class="card-text"><%= listing.country %></p>
+
+
+
+                </div>
+
+            </div>
+
+            
+            
+            
+            
+            <div class="row justify-content-start g-2 mb-3">
+
+
+            <% if (currUser && currUser._id.equals(listing.owner._id)) { %>
+                <!-- Owner: Edit -->
+                <div class="col-4 col-sm-3 col-md-3 col-lg-2">
+                <a href="/listings/<%= listing._id %>/edit" class="btn btn-dark w-100">Edit</a>
+                </div>
+
+                <!-- Owner: Delete -->
+                <div class="col-4 col-sm-3 col-md-3 col-lg-2">
+                <form method="POST" action="/listings/<%= listing._id %>?_method=DELETE">
+                    <button type="submit" class="btn btn-dark w-100">Delete</button>
+                </form>
+                </div>
+
+
+            <% } %>
+
+            </div>
+
+
+
+    <!-- floating card section -->
+
+
+<!-- 🌟 Airbnb-style Floating Booking Card -->
+<div class="airbnb-floating-card collapsed" id="payCard">
+
+  <!-- Content that expands/collapses -->
+  <div class="card-content">
+
+    <!-- Optional Badge -->
+    <div class="airbnb-badge">
+      💎 Rare find! This place is usually booked
+    </div>
+
+    <!-- Price -->
+    <div class="price-section mb-3">
+      <h5>
+        <strong>₹<%= listing.price.toLocaleString("en-IN") %></strong>
+        <small class="text-muted">per night</small>
+      </h5>
+    </div>
+
+    <!-- Booking Form -->
+    <form id="bookingForm" method="GET">
+
+  <!-- Check-in -->
+  <label class="small text-muted">Check-in</label>
+  <input
+    type="text"
+    id="checkin"
+    name="checkin"
+    class="form-control"
+    required
+  />
+
+  <!-- Check-out -->
+  <label class="small text-muted mt-2">Check-out</label>
+  <input
+    type="text"
+    id="checkout"
+    name="checkout"
+    class="form-control"
+    required
+  />
+
+  <!-- Guests -->
+  <label class="small text-muted mt-2">Guests</label>
+  <select id="guests" name="guestCount" class="form-select" required>
+    <option value="">Select guests</option>
+    <option value="1">1 guest</option>
+    <option value="2">2 guests</option>
+    <option value="3">3 guests</option>
+    <option value="4">4 guests</option>
+  </select>
+
+  <button class="btn btn-danger w-100 mt-3">
+    Reserve
+  </button>
+</form>
+
+
+  </div>
+</div>
+
+<!-- Backdrop (OUTSIDE card) -->
+<div class="pay-backdrop" id="payBackdrop"></div>
+
+
+           
+
+     <!------------------------------------------------- REVIEW SECTION -------------------------------------------------------->
+          
+            <% if(currUser) { %>
+
+                <hr >
+
+                <div class=" col-8  mb-3 ">
+
+                    
+    
+                    <form method="POST" action="/listings/<%= listing.id %>/reviews" novalidate  class="needs-validation">
+                        <h4>Leave a review</h4>
+
+
+
+                        <div class="mb-3 mt-3">
+                            <label for="rating" class="form-label">Rating : </label>
+                            <fieldset class="starability-growRotate">
+                                
+                                
+                                <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="1" checked aria-label="No rating." />
+                                <input type="radio" id="first-rate1" name="review[rating]" value="1" />
+                                <label for="first-rate1" title="Terrible">1 star</label>
+                                <input type="radio" id="first-rate2" name="review[rating]" value="2" />
+                                <label for="first-rate2" title="Not good">2 stars</label>
+                                <input type="radio" id="first-rate3" name="review[rating]" value="3" />
+                                <label for="first-rate3" title="Average">3 stars</label>
+                                <input type="radio" id="first-rate4" name="review[rating]" value="4" />
+                                <label for="first-rate4" title="Very good">4 stars</label>
+                                <input type="radio" id="first-rate5" name="review[rating]" value="5" />
+                                <label for="first-rate5" title="Amazing">5 stars</label>
+                            </fieldset>
+                        </div>
+
+
+
+
+
+
+
+
+
+
+
+                        <div class="mb-3 mt-3">
+                            <label for="comment" class="form-label">Comment : </label>
+                            <textarea name="review[comment]" id="comment" cols="30" rows="5" class="form-control" required  ></textarea>
+                            <div class="invalid-feedback">
+                                Please enter a comment.
+                            </div>
+                        </div>
+
+                        <div class="col-4 col-sm-3 col-md-3 col-lg-2">
+                            <button class="btn btn-dark w-100" type="submit">submit</button>
+                        </div>
+                    </form>
+
+
+
+                </div>
+
+            <% } %>
+
+    </div>
+
+    <hr>
+
+        <% if(listing.reviews.length > 0) { %>
+
+            
+    
+            <h4>All Reviews</h4>
+                <!-- <ul>
+                    <% for ( review of listing.reviews) { %>
+
+                        <li>Comment:<%= review.comment %></li>
+                        <li>Rating: <%= review.rating %></li>
+
+                    <% } %>    
+
+                </ul> -->
+
+                <div class="row row-cols-lg-2 row-cols-md-2 row-cols-sm-1 offset-2 mb-3">
+
+                    
+                        
+                        <% for ( review of listing.reviews) { %>
+
+                            <div class="card offset-1 mb-3" style="width: 25rem; background-color: #ebebeb; " >
+                                <div class="card-body">
+                                    <h5 class="card-title"> @<%= review.author.username %> </h5>
+                                    <h6 class="card-subtitle mb-2 text-body-secondary"></h6>
+
+                                    <p class="starability-result card-text" data-rating="<%= review.rating %>"></p>
+
+
+
+
+                                    <p class="card-text"><%= review.comment %></p>
+                                    <!-- <a href="#" class="card-link">Card link</a>
+                                    <a href="#" class="card-link">Another link</a> -->
+                                </div>
+
+                                <form method="POST" class="mb-3" action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE" >
+
+                                    <div class="col-3 ">
+                                        <button class="btn btn-dark w-100" type="submit">Delete</button>
+                                    </div>
+
+                                </form>
+                            </div>
+
+                        <% } %>
+
+                    
+                
+                </div>
+        <hr>
+
+        <% } %>    
+
+    
+
+        <!-- --------------------------- Gallery Model------------------------------------------ -->
+
+            <div id="galleryModal" class="gallery-modal">
+                <span class="close" onclick="closeGallery()">&times;</span>
+                <img id="modalImage" class="modal-content">
+                <div class="nav-buttons">
+                    <button onclick="prevImage()">←</button>
+                    <button onclick="nextImage()">→</button>
+                </div>
+            </div>
+
+        <!-- ------------------------------------------------------------------------------------------- -->
+
+
+        <div class=" col-12  mb-3">
+
+            <h3>Where you'll be</h3>
+
+            <div id="map"></div>
+
+        </div>
+
+
+     
+</body>
+
+<script src="/js/map.js"></script>
+
+
+
+
+
+<script>
+  const blockedDates = <%- JSON.stringify(blockedDates || []) %>;
+
+  // Initialize flatpickr for checkout field
+  const checkoutPicker = flatpickr("#checkout", {
+    dateFormat: "Y-m-d",
+    minDate: "today",
+    disable: blockedDates,
+    clickOpens: true, // Allow clicking to open
+    allowInput: true, // Allow manual input
+    altInput: true,   // Show readable format
+    altFormat: "F j, Y"
+  });
+
+  // Initialize flatpickr for checkin field
+  const checkinPicker = flatpickr("#checkin", {
+    dateFormat: "Y-m-d",
+    minDate: "today",
+    disable: blockedDates,
+    clickOpens: true, // Allow clicking to open
+    allowInput: true, // Allow manual input
+    altInput: true,   // Show readable format
+    altFormat: "F j, Y",
+    onChange(selectedDates) {
+      if (!selectedDates.length) return;
+
+      const minCheckout = new Date(selectedDates[0]);
+      minCheckout.setDate(minCheckout.getDate() + 1);
+
+      checkoutPicker.set("minDate", minCheckout);
+      checkoutPicker.clear();
+      // Don't auto-open checkout, let user click it
+    }
+  });
+
+  // Add event listener to make checkout field clickable
+  document.getElementById('checkout').addEventListener('click', function() {
+    if (checkoutPicker) {
+      checkoutPicker.open();
+    }
+  });
+
+  // Add validation to ensure checkout is after checkin
+  document.getElementById('checkin').addEventListener('change', function() {
+    const checkinValue = this.value;
+    const checkoutField = document.getElementById('checkout');
+    
+    if (checkinValue && checkoutField.value) {
+      const checkinDate = new Date(checkinValue);
+      const checkoutDate = new Date(checkoutField.value);
+      
+      if (checkoutDate <= checkinDate) {
+        alert("Checkout date must be after check-in date");
+        checkoutField.value = '';
+      }
+    }
+  });
+</script>
+
+
+
+
+<!-- If you're only using /search to store checkin, checkout, guestCount in a cookie, set the cookie in JS directly, then redirect.  -->
+<!-- <script src="/js/show.js"></script> -->
+<script>
+  const searchForm = document.getElementById("searchForm");
+
+  if (searchForm) {
+    searchForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const formData = new FormData(searchForm);
+      const checkin = formData.get("checkin");
+      const checkout = formData.get("checkout");
+      const guestCount = formData.get("guestCount");
+
+      // Convert to actual Date objects
+      const checkinDate = new Date(checkin);
+      const checkoutDate = new Date(checkout);
+
+      //checkout should not be less than or equal to checkin date
+      if (checkoutDate <= checkinDate) {
+        alert("error : Checkout date must be greater than check-in date.");
+        return; //  Stop form submission
+      }
+
+      //  Set cookie 
+      const data = { checkin, checkout, guestCount };
+      document.cookie = `searchData=${encodeURIComponent(JSON.stringify(data))}; path=/; max-age=86400`;
+
+      // Redirect to booking page
+      window.location.href = "/listings/<%= listing._id %>/book";
+    });
+  }
+</script>
+
+<script>
+  const searchForm1 = document.querySelector(".search-form");
+  const whereInput = document.getElementById("where");
+  const searchButton = document.querySelector(".search-button");
+
+  if (searchForm1 && whereInput && searchButton) {
+    // Expand when "Where" is focused
+    whereInput.addEventListener("focus", () => {
+      searchForm1.classList.add("active");
+    });
+
+    // Collapse when clicking outside
+    document.addEventListener("click", (e) => {
+      if (!searchForm1.contains(e.target)) {
+        searchForm1.classList.remove("active");
+      }
+    });
+
+    // Collapse when clicking search button
+    searchButton.addEventListener("click", () => {
+      searchForm1.classList.remove("active");
+    });
+
+    // Collapse after form submit
+    searchForm1.addEventListener("submit", () => {
+      searchForm1.classList.remove("active");
+    });
+  }
+</script>
+
+<!-- --------------------------------------------------------- -->
+<script>
+// ────────────────────────────────────────────────
+const card = document.getElementById('payCard');
+const backdrop = document.getElementById('payBackdrop');
+
+if (!card || !backdrop) {
+  console.warn("payCard or payBackdrop element not found");
+}
+
+// ─── Swipe to close (touch) ───────────────────────
+let touchStartY = 0;
+let touchCurrentY = 0;
+
+function handleTouchStart(e) {
+  touchStartY = e.touches[0].clientY;
+}
+
+function handleTouchMove(e) {
+  touchCurrentY = e.touches[0].clientY;
+  const diff = touchCurrentY - touchStartY;
+
+  // Only allow dragging down when expanded
+  if (diff > 0 && card.classList.contains('expanded')) {
+    card.style.transform = `translateY(${Math.min(diff, 180)}px)`;
+    card.style.transition = 'none'; // smooth following
+  }
+}
+
+function handleTouchEnd(e) {
+  const diff = touchCurrentY - touchStartY;
+
+  card.style.transition = 'transform 0.4s cubic-bezier(0.22, 1, 0.36, 1)';
+
+  if (diff > 80 && card.classList.contains('expanded')) {
+    // Collapse on swipe down
+    collapseCard();
+  } else {
+    // Snap back
+    card.style.transform = '';
+  }
+}
+
+// ─── Click to expand when collapsed ───────────────
+card.addEventListener('click', (e) => {
+  // Prevent this from firing when clicking inside expanded card
+  if (card.classList.contains('collapsed')) {
+    e.stopPropagation(); // important
+    expandCard();
+  }
+});
+
+// ─── Click outside (backdrop) to close ────────────
+backdrop.addEventListener('click', (e) => {
+  // Make sure click is directly on backdrop (not bubbled from card)
+  if (e.target === backdrop && card.classList.contains('expanded')) {
+    collapseCard();
+  }
+});
+
+// Also support clicking anywhere outside card (more reliable on mobile)
+document.addEventListener('click', (e) => {
+  if (card.classList.contains('expanded')) {
+    // If click is NOT inside the card → close
+    if (!card.contains(e.target)) {
+      collapseCard();
+    }
+  }
+});
+
+// ─── Helper functions ─────────────────────────────
+function expandCard() {
+  card.classList.remove('collapsed');
+  card.classList.add('expanded');
+  backdrop.classList.add('show');
+  card.style.transform = ''; // reset any drag
+}
+
+function collapseCard() {
+  card.classList.remove('expanded');
+  card.classList.add('collapsed');
+  backdrop.classList.remove('show');
+  card.style.transform = '';
+}
+
+// ─── Attach touch listeners only once ───────────
+card.addEventListener('touchstart', handleTouchStart, { passive: true });
+card.addEventListener('touchmove', handleTouchMove, { passive: false });
+card.addEventListener('touchend', handleTouchEnd, { passive: true });
+
+// Optional: close on ESC key (desktop testing)
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && card.classList.contains('expanded')) {
+    collapseCard();
+  }
+});
+</script>
+
+
+
+<!-- --------------------------bookinng form ---------------------- -->
+<script>
+  const form = document.getElementById("bookingForm");
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const checkinInput = form.querySelector("#checkin");
+    const checkoutInput = form.querySelector("#checkout");
+    const guestsInput = form.querySelector("#guests");
+
+    const checkin = checkinInput?.value;
+    const checkout = checkoutInput?.value;
+    const guestCount = guestsInput?.value || 1;
+
+    if (!checkin || !checkout) {
+      alert("Please select check-in and check-out dates");
+      return;
+    }
+
+    // Convert to Date objects (important)
+    const checkinDate = new Date(checkin);
+    const checkoutDate = new Date(checkout);
+
+    checkinDate.setHours(0, 0, 0, 0);
+    checkoutDate.setHours(0, 0, 0, 0);
+
+    const MS_PER_DAY = 1000 * 60 * 60 * 24;
+    const nightCount = (checkoutDate - checkinDate) / MS_PER_DAY;
+
+    if (nightCount < 1) {
+      alert("Minimum stay is 1 night (checkout must be after check-in)");
+      return;
+    }
+
+    //  Store booking data (night-based logic)
+    const data = {
+      checkin,
+      checkout,
+      guestCount,
+      nights: nightCount
+    };
+
+    document.cookie = `searchData=${encodeURIComponent(
+      JSON.stringify(data)
+    )}; path=/; max-age=86400`;
+
+    // Redirect to booking page
+    window.location.href = "/listings/<%= listing._id %>/book";
+  });
+</script>
+
+
+
+<!-- ----------------------- checkout --------------------------- -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+// Function to refresh blocked dates after booking
+function refreshBlockedDates() {
+  // Reload the page to fetch updated bookings
+  location.reload();
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("bookingForm");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const checkin = form.checkin.value;
+    const checkout = form.checkout.value;
+    const guestCount = form.guests.value;
+
+    if (!checkin || !checkout || !guestCount) {
+      alert("Fill all fields");
+      return;
+    }
+
+    const inDate = new Date(checkin);
+    const outDate = new Date(checkout);
+    const nights = (outDate - inDate) / (1000 * 60 * 60 * 24);
+
+    if (nights < 1) {
+      alert("Checkout must be after check-in");
+      return;
+    }
+
+    // Store booking data in cookie (so backend can read it)
+    document.cookie = `searchData=${encodeURIComponent(
+      JSON.stringify({ checkin, checkout, guestCount, nights })
+    )}; path=/; max-age=86400`;
+
+    const listingId = "<%= listing._id %>";
+
+    //  Call backend to create Razorpay order
+    const res = await fetch(`/listings/${listingId}/book`, {
+      method: "GET",
+      credentials: "include"
+    });
+    const data = await res.json();
+
+    if (!data.orderId) {
+      return alert("Order creation failed");
+    }
+
+    //  Open Razorpay popup
+    const rzp = new Razorpay({
+      key: data.razorpayKey,
+      amount: data.amount,
+      currency: data.currency,
+      name: "Stay Booking",
+      description: `${data.nights} night stay`,
+      order_id: data.orderId,
+      handler: async (response) => {
+        //  Verify payment
+        const verifyRes = await fetch(`/listings/${listingId}/book/verify-payment`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ ...response, listingId })
+        });
+        const result = await verifyRes.json();
+
+        //  Redirect to success page if payment verified
+        if (result.success) {
+          // If redirecting back to listing, refresh blocked dates
+          if (result.redirectUrl && result.redirectUrl.includes('/listings/')) {
+            window.location.href = result.redirectUrl;
+          } else {
+            window.location.href = "/bookings/success";
+          }
+        } else {
+          alert("Payment verification failed");
+        }
+      },
+      theme: { color: "#dc3545" }
+    });
+
+    rzp.open();
+  });
+});
+</script>

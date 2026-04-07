@@ -1,0 +1,20 @@
+<%   if(success && success.length) {   %> <!-- success is array so we have to check its length should be zero then green line will not be seen -->
+    <div class="alert alert-success alert-dismissible fade show d-flex justify-content-between align-items-center mt-2" role="alert">
+  <div>
+    <%= success %>
+  </div>
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+
+<% } %>
+
+
+<%   if(error && error.length) {   %> <!-- success is array so we have to check its length should be zero then green line will not be seen -->
+    <div class="alert alert-danger alert-dismissible fade show d-flex justify-content-between align-items-center mt-2" role="alert">
+  <div>
+    <%= error %>
+  </div>
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+
+<% } %>

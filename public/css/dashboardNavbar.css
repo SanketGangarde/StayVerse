@@ -1,0 +1,59 @@
+.dash-navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 70px;
+    background: #f8f6f5;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 40px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    z-index: 1000;
+}
+
+/* LEFT */
+.logo {
+    color: #b1202d;
+    font-weight: bold;
+    font-size: 22px;
+}
+
+/* CENTER */
+.nav-center {
+    display: flex;
+    gap: 30px;
+}
+
+.nav-center a {
+    text-decoration: none;
+    color: #666;
+    font-weight: 500;
+    padding-bottom: 5px;
+}
+
+.nav-center a:hover {
+    color: black;
+}
+
+.nav-center .active {
+    color: #b1202d;
+    border-bottom: 2px solid #b1202d;
+}
+
+/* RIGHT */
+.nav-right {
+    display: flex;
+    gap: 20px;
+}
+
+.icon {
+    font-size: 18px;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 50%;
+}
+
+.icon:hover {
+    background: #eee;
+}

@@ -1,0 +1,44 @@
+<% layout("/layouts/dashboard") %>
+
+<div class="main d-flex justify-content-center " style="min-height:70vh;">
+
+    <div class="w-100" style="max-width:400px;">
+
+        <h2 class="text-center mb-4">Edit Profile</h2>
+
+        <form action="/users/<%= user._id %>" method="POST">
+
+            <!-- NAME -->
+            <div class="mb-3">
+                <label class="form-label">Name</label>
+                <input 
+                    type="text" 
+                    name="username" 
+                    class="form-control" 
+                    value="<%= user.username %>" 
+                    required
+                >
+            </div>
+
+            <!-- EMAIL -->
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input 
+                    type="email" 
+                    name="email" 
+                    class="form-control" 
+                    value="<%= user.email %>" 
+                    required
+                >
+            </div>
+
+            <!-- BUTTON -->
+            <button class="btn btn-dark w-100">
+                Update Profile
+            </button>
+
+        </form>
+
+    </div>
+
+</div>

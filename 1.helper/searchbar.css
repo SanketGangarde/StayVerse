@@ -1,0 +1,120 @@
+/* Base styles */
+.search-form {
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  background: white;
+  border-radius: 30px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  padding: 8px 16px;
+  gap: 24px;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  color: #222;
+}
+
+/* Individual search groups */
+.search-group {
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+  font-size: 12px;
+  color: #222;
+}
+
+/* Inputs inside groups */
+.search-group input {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 6px 0;
+  color: #222;
+  cursor: text;
+  min-width: 80px;
+}
+
+/* Specific flex sizes and border right */
+.where {
+  flex: 2;
+  padding-right: 16px;
+  border-right: 1px solid #ddd;
+}
+
+.checkin {
+  flex: 1;
+  padding: 0 16px;
+  border-right: 1px solid #ddd;
+}
+
+.checkout {
+  flex: 1;
+  padding: 0 16px;
+  border-right: 1px solid #ddd;
+}
+
+.guests {
+  flex: 1;
+  padding-left: 16px;
+}
+
+/* Date inputs cursor */
+.search-group input[type="date"] {
+  cursor: pointer;
+}
+
+/* Search button */
+.search-button {
+  background: #ff385c;
+  border: none;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
+  font-size: 18px;
+  margin-left: 16px;
+  box-shadow: 0 2px 6px rgba(255, 56, 92, 0.5);
+  transition: background-color 0.3s ease;
+}
+
+.search-button:hover {
+  background-color: #e61e4d;
+}
+
+/* Responsive - stack on small screens */
+@media (max-width: 942px) {
+  .search-form {
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .where,
+  .checkin,
+  .checkout,
+  .guests {
+    flex: unset;
+    border: none !important;
+    padding: 0 !important;
+  }
+
+  .search-group {
+    width: 100%;
+  }
+
+  .search-button {
+    width: 100%;
+    border-radius: 12px;
+    height: 44px;
+    margin-left: 0;
+    font-size: 16px;
+  }
+}
+
+

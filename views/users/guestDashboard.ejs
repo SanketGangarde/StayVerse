@@ -1,0 +1,129 @@
+<% layout("/layouts/dashboard") %>
+
+
+
+<div class="main">
+
+    <!-- PROFILE -->
+    <div class="profile">
+        <div class="avatar">
+            <%= user.username.charAt(0).toUpperCase() %>
+        </div>
+
+        <div>
+            <h2>Welcome back, <%= user.username %>.</h2>
+            <p style="color:#777;">Member since 2024</p>
+
+            <div class="stats">
+                <div class="stat-box">
+                    Total Bookings <br><strong><%= bookings.length %></strong>
+                </div>
+
+                <div class="stat-box">
+                    Upcoming <br>
+                    <strong><%= bookings.filter(b => b.checkin > new Date()).length %></strong>
+                </div>
+
+                <div class="stat-box">
+                    Total Spent <br>
+                    <strong>₹<%= bookings.reduce((s,b)=>s+b.amountPaid,0) %></strong>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FILTERS -->
+    <div class="filters">
+        <button onclick="filterBookings('all')" class="active">All</button>
+        <button onclick="filterBookings('upcoming')">Upcoming</button>
+        <button onclick="filterBookings('ongoing')">Ongoing</button>
+        <button onclick="filterBookings('completed')">Completed</button>
+    </div>
+
+    <!-- CARDS -->
+    <div class="grid">
+
+        <% bookings.forEach(booking => { %>
+
+            <% 
+                let status="";
+                const today=new Date();
+
+                if(booking.checkin > today) status="upcoming";
+                else if(booking.checkout >= today) status="ongoing";
+                else status="completed";
+            %>
+
+            <div class="card" data-status="<%= status %>">
+
+                <!-- IMAGE -->
+                <a href="/listings/<%= booking.listing._id %>" class="image-link">
+                    <img src="<%= booking.listing.images?.[0]?.url || 'https://via.placeholder.com/300' %>">
+                </a>
+
+                <!-- CONTENT -->
+                <div class="card-body">
+
+                    <div>
+                        <span class="status <%= status %>"><%= status.toUpperCase() %></span>
+
+                        <h3 style="font-size:small;"><%= booking.listing.title %></h3>
+
+                        <p class="info">
+                            <%= new Date(booking.checkin).toDateString() %> —
+                            <%= new Date(booking.checkout).toDateString() %>
+                        </p>
+
+                        <p class="info">
+                            <%= booking.guests %> Guests • <%= booking.nights %> Nights
+                        </p>
+
+                        <p><strong>₹<%= booking.amountPaid %></strong> total paid</p>
+                    </div>
+
+                    <div class="actions">
+                        <a href="/listings/<%= booking.listing._id %>" class="btn primary">
+                            View Details
+                        </a>
+
+                        <% if(status==="upcoming"){ %>
+                            <form action="/bookings/<%= booking._id %>?_method=DELETE" method="POST">
+                                <button class="btn secondary">Cancel</button>
+                            </form>
+                        <% } else if(status==="ongoing"){ %>
+                            <button class="btn secondary" disabled>In Progress</button>
+                        <% } else { %>
+                            <a href="/listings/<%= booking.listing._id %>" class="btn primary">
+                               Rate Us
+                            </a>
+                        <% } %>
+                    </div>
+
+                </div>
+            </div>
+
+        <% }) %>
+
+    </div>
+
+</div>
+
+<script>
+function filterBookings(type){
+    const cards=document.querySelectorAll(".card");
+    const buttons=document.querySelectorAll(".filters button");
+
+    buttons.forEach(btn=>btn.classList.remove("active"));
+    event.target.classList.add("active");
+
+    cards.forEach(card=>{
+        const status=card.dataset.status;
+
+        if(type==="all"||status===type){
+            card.style.display="flex";
+        } else {
+            card.style.display="none";
+        }
+    });
+}
+</script>

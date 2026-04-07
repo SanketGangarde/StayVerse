@@ -1,0 +1,125 @@
+/* Base search form layout: always horizontal */
+.search-form {
+  display: flex;
+  flex-wrap: wrap; /* No wrapping! */
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 12px;
+  margin: 20px auto;
+  width: 100%;
+  max-width: 1000px;
+  background: white;
+  border-radius: 32px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  font-family: "Segoe UI", sans-serif;
+  overflow-x: auto; /* Scroll if too small */
+}
+
+/* Each input group */
+.search-group {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-width: 80px;
+}
+
+/* Labels */
+.search-group label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 2px;
+  white-space: nowrap;
+}
+
+/* Inputs */
+.search-group input,
+.search-group select {
+  border: 1px solid #ddd;
+  outline: none;
+  border-radius: 6px;
+  padding: 5px 6px;
+  font-size: 13px;
+  font-weight: 500;
+  background-color: #fff;
+  color: #111;
+  width: 100%;
+  min-width: 60px;
+  transition: border-color 0.2s;
+}
+
+.search-group input:focus,
+.search-group select:focus {
+  border-color: #ff385c;
+}
+
+/* Search button */
+.search-button {
+  flex-shrink: 0;
+  background: #ff385c;
+  color: white;
+  border: none;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s;
+  cursor: pointer;
+}
+
+.search-button:hover {
+  background: #e61e4d;
+}
+
+
+
+/* ================= MOBILE SEARCH BAR ================= */
+/* ================= MOBILE COLLAPSIBLE SEARCH ================= */
+@media (max-width: 768px) {
+
+  /* Default: show only WHERE */
+  .search-form .checkin,
+  .search-form .checkout,
+  .search-form .guests,
+  .search-form .search-button {
+    display: none;
+  }
+
+  /* Expanded state */
+  .search-form.active .checkin,
+  .search-form.active .checkout,
+  .search-form.active .guests,
+  .search-form.active .search-button {
+    display: flex;
+  }
+
+  .search-form {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 14px;
+    border-radius: 16px;
+    gap: 12px;
+  }
+
+  .search-group {
+    width: 100%;
+  }
+
+  .search-group input {
+    font-size: 15px; /* prevents iOS zoom */
+    padding: 10px 12px;
+    border-radius: 10px;
+  }
+
+  /* Search button full width */
+  .search-button {
+    width: 100%;
+    height: 46px;
+    border-radius: 12px;
+    font-size: 16px;
+  }
+}
