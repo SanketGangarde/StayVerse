@@ -102,6 +102,10 @@ app.use((req, res, next) => {
 // }));
 
 // Routes
+app.get('/', (req, res) => {
+  res.redirect('/listings');
+});
+
 app.use("/", usersRoute); // Login, signup — needs passport and express.urlencoded
 app.use("/", footerRoute);
 app.use("/listings", listingsRoute); // Later you’ll use express-formidable *inside* listingsRoute when needed
