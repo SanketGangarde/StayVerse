@@ -31,16 +31,24 @@ const paymentRoute = require("./routes/appPayment.js");
 const bookingRoutes = require("./routes/appBooking.js");
 const createAdminIfNotExists = require("./utils/admin.js");
 
-// MongoDB connection
-main()
-  .then(() => console.log("MongoDB connected"))
-  .catch(err => console.log(err));
-
 async function main() {
-  await mongoose.connect(process.env.ATLASDB_URL);
-  await createAdminIfNotExists();
+  try {
+    await mongoose.connect(process.env.ATLASDB_URL);
+    console.log("MongoDB connected successfully");
+
+    await createAdminIfNotExists();
+
+    const PORT = process.env.PORT || 8080;
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+
+  } catch (err) {
+    console.log(err);
+  }
 }
 
+main();
 // EJS and static files
 app.engine("ejs", ejsMate);
 app.set("view engine", "ejs");
