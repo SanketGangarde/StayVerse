@@ -10,11 +10,11 @@
     <!-- RIGHT SIDE -->
     <div class="d-flex align-items-center ms-auto position-relative">
 
-      <% if(!currUser) { %>
+      <% if (typeof currUser === 'undefined' || !currUser) { %>
         <a class="nav-link me-3" href="/login">Become a host</a>
       <% } %>
 
-      <% if(currUser) { %>
+      <% if (typeof currUser !== 'undefined' && currUser) { %>
 
         <!-- CREATE LISTING (hide if already on that page) -->
         <% if(currentPath !== "/listings/new") { %>
@@ -33,11 +33,11 @@
       <!-- DROPDOWN -->
       <div id="menuBox" class="menu-box d-none">
 
-        <% if(!currUser) { %>
+        <% if (typeof currUser === 'undefined' || !currUser) { %>
           <a href="/login" class="menu-item">Login</a>
         <% } %>
 
-        <% if(currUser) { %>
+        <% if (typeof currUser !== 'undefined' && currUser) { %>
           <a href="/logout" class="menu-item">Logout</a>
 
           <a href="/dashboard" class="menu-item">Dashboard</a>
