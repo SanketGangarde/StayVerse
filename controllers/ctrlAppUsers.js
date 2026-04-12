@@ -268,7 +268,7 @@ If you did not request this, please ignore this email.`
         res.redirect("/login");
 
     } catch (err) {
-        console.error("Error handling forgot password:", err);
+        console.log("Error handling forgot password:", err);
         req.flash("error", "An error occurred. Please try again.");
         res.redirect("/forgot-password");
     }

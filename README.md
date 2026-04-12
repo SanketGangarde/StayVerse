@@ -1,12 +1,12 @@
 # StayVerse
 
-StayVerse is a full-stack accommodation booking platform inspired by Airbnb. Users can browse listings, create and manage properties, book stays, make secure payments (Razorpay test mode), leave reviews, and interact with a community forum.
+StayVerse is a full‑stack accommodation marketplace built to connect hosts and guests with a polished, end‑to‑end booking experience. The application uses a modular Express.js backend with EJS server-side rendering to deliver fast, SEO‑friendly pages and maintainable routing and controller layers. Hosts can create, edit, and manage listings with images, descriptions, amenities, and availability; guests can search with filters, view results on an interactive map, read ratings and reviews, and complete secure bookings. The booking flow is integrated with Razorpay for payment capture and confirmation, producing booking records and checkout receipts. Role‑based dashboards provide personalized views for guests, hosts, and admins—supporting profile management, booking history, listing moderation, and review administration. The codebase emphasizes separation of concerns (routes, controllers, models, middleware, utilities) with robust error handling and async wrappers to keep request flow reliable. Public assets include responsive CSS and client-side JavaScript for seamless user interactions (search bar, maps, star ratings, and dynamic form behavior). Centralized configuration and modular utilities make it straightforward to adapt the app for scaling, adding calendar availability, messaging, or analytics. StayVerse is well suited as a production‑grade app or learning project that demonstrates practical patterns in web app architecture, secure payment integration, role management, and user experience for marketplace workflows.
 
 ---
 
 ## Live Demo
 
-(Deployed URL placeholder) — https://stayverse-1.onrender.com/listings
+Deployed URL  — https://stayverse-1.onrender.com/
 
 ---
 
@@ -27,13 +27,13 @@ StayVerse is a full-stack accommodation booking platform inspired by Airbnb. Use
 
 ## Tech Stack
 
-- Frontend: EJS, Bootstrap, CSS, JavaScript
+- Frontend: EJS,HTML, Bootstrap, CSS, JavaScript
 - Backend: Node.js, Express.js (MVC architecture)
 - Database: MongoDB (Mongoose)
 - Authentication: Passport.js
 - Payments: Razorpay (test mode)
 - Images: Cloudinary
-- Maps: Map integration (Mapbox or similar)
+- Maps: Map integration (Mapbox)
 
 ---
 
@@ -58,14 +58,11 @@ npm install
 
 4. Start the app
 
-```bash
-# development
-npm run dev
-# or
-node app.js
+
+5. node app.js
 ```
 
-Open http://localhost:3000 (or your configured PORT) in your browser.
+Open http://localhost:8080 (or your configured PORT) in your browser.
 
 ---
 
@@ -75,7 +72,7 @@ Create a `.env` file with values for your environment. Example keys used by the 
 
 ```env
 PORT=3000
-MONGODB_URI=mongodb://localhost:27017/stayverse
+MONGODB_URI=mongodb://localhost:8080/listings
 SESSION_SECRET=your_session_secret
 CLOUDINARY_CLOUD_NAME=your_cloud_name
 CLOUDINARY_KEY=your_cloudinary_api_key
@@ -130,9 +127,8 @@ Include screenshots of key pages (placeholders below):
 
 ## Author
 
-- Your Name — https://github.com/SanketGangarde
-
-If you'd like to include contact details or a short bio, replace the placeholders above.
+- Sanket Gahininath Gangarde — https://github.com/SanketGangarde
+- gmail - sgangarde747@gmail.com
 
 ---
 
