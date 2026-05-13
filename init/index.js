@@ -3,6 +3,7 @@ const initData = require("./data.js");
 const Listing = require("../models/listing.js");
 const User = require("../models/user.js");
 
+
 main()
 .then( () => {
     console.log("connection successful of mongoose db");
