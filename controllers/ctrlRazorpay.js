@@ -1,9 +1,12 @@
 const Listing = require("../models/listing");
 const Booking = require("../models/bookListing");
+const User = require("../models/user");
 const { createRazorpayInstance } = require("../config/razorpayConfig");
 const nodemailer = require("nodemailer");
 const crypto = require("crypto");
 require("dotenv").config();
+
+const { sendBookingConfirmation } = require("../utils/sendEmail");
 
 // CREATE ORDER
 module.exports.createOrder = async (req, res) => {
@@ -14,16 +17,19 @@ module.exports.createOrder = async (req, res) => {
     const listing = await Listing.findById(id);
     if (!listing) return res.status(404).json({ error: "Listing not found" });
 
-    if (!req.cookies.searchData) return res.status(400).json({ error: "Booking data missing" });
+    if (!req.cookies.searchData)
+      return res.status(400).json({ error: "Booking data missing" });
     const searchData = JSON.parse(req.cookies.searchData);
 
     const checkinDate = new Date(searchData.checkin);
     const checkoutDate = new Date(searchData.checkout);
-    checkinDate.setUTCHours(0,0,0,0);
-    checkoutDate.setUTCHours(0,0,0,0);
+    checkinDate.setUTCHours(0, 0, 0, 0);
+    checkoutDate.setUTCHours(0, 0, 0, 0);
 
-    const MS_PER_DAY = 1000*60*60*24;
-    const nights = Math.round((checkoutDate.getTime() - checkinDate.getTime()) / MS_PER_DAY);
+    const MS_PER_DAY = 1000 * 60 * 60 * 24;
+    const nights = Math.round(
+      (checkoutDate.getTime() - checkinDate.getTime()) / MS_PER_DAY,
+    );
     if (nights < 1) return res.status(400).json({ error: "Invalid dates" });
 
     const baseAmount = listing.price * nights;
@@ -35,7 +41,7 @@ module.exports.createOrder = async (req, res) => {
       amount: totalAmount * 100,
       currency: "INR",
       receipt: `bk_${Date.now()}`,
-      payment_capture: 1
+      payment_capture: 1,
     });
 
     // return res.json({
@@ -52,15 +58,13 @@ module.exports.createOrder = async (req, res) => {
     // });
 
     res.render("bookings/checkout", {
-    listing,
-    order,
-    searchData,
-    razorpayKey: process.env.RAZORPAY_KEY_ID
-  });
-
-    
-
-  } catch(err) {
+      listing,
+      order,
+      searchData,
+      nights,
+      razorpayKey: process.env.RAZORPAY_KEY_ID,
+    });
+  } catch (err) {
     console.error("Create order error:", err);
     res.status(500).json({ error: "Failed to create order" });
   }
@@ -68,23 +72,20 @@ module.exports.createOrder = async (req, res) => {
 
 // VERIFY PAYMENT
 
-
-
 module.exports.verifyPayment = async (req, res) => {
   console.log("Verify Payment hit");
 
   try {
-    const {
-      razorpay_order_id,
-      razorpay_payment_id,
-      razorpay_signature
-    } = req.body;
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
+      req.body;
 
     const listingId = req.params.id; // ✅ get from URL
     const userId = req.user._id;
 
     if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
-      return res.status(400).json({ success: false, message: "Missing Razorpay fields" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Missing Razorpay fields" });
     }
 
     // ✅ Verify signature
@@ -94,22 +95,29 @@ module.exports.verifyPayment = async (req, res) => {
       .update(body)
       .digest("hex");
 
-
     if (expectedSignature !== razorpay_signature) {
-      return res.status(400).json({ success: false, message: "Invalid signature" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid signature" });
     }
 
     // ✅ Fetch listing
     const listing = await Listing.findById(listingId);
     if (!listing) {
-      return res.status(404).json({ success: false, message: "Listing not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Listing not found" });
     }
 
     // ✅ Read booking data from cookie
     const searchData = JSON.parse(req.cookies.searchData);
     const checkin = new Date(searchData.checkin);
     const checkout = new Date(searchData.checkout);
-    const nights = (checkout - checkin) / (1000 * 60 * 60 * 24);
+    checkin.setUTCHours(0, 0, 0, 0);
+    checkout.setUTCHours(0, 0, 0, 0);
+    const nights = Math.round(
+      (checkout.getTime() - checkin.getTime()) / (1000 * 60 * 60 * 24),
+    );
 
     const baseAmount = listing.price * nights;
     const gstAmount = Math.round(baseAmount * 0.18);
@@ -125,62 +133,42 @@ module.exports.verifyPayment = async (req, res) => {
       nights,
       amountPaid: totalAmount,
       razorpayPaymentId: razorpay_payment_id,
-      razorpayOrderId: razorpay_order_id
+      razorpayOrderId: razorpay_order_id,
     });
 
     await booking.save();
 
-    //send confirmation email here to user
-    // Create transporter
-const transporter = nodemailer.createTransport({
-  host: process.env.MAIL_HOST,
-  port: process.env.MAIL_PORT,
-  secure: false,
-  auth: {
-    user: process.env.MAIL_USER,
-    pass: process.env.MAIL_PASS
-  },
-  tls: {
-    rejectUnauthorized: false
-  }
-});
+    // ✅ Send confirmation email
 
-const checkinDate = new Date(checkin).toDateString();
-const checkoutDate = new Date(checkout).toDateString();
+    try {
+      await sendBookingConfirmation({
+        to: req.user.email,
+        username: req.user.username,
+        booking,
+        listing,
+        checkin,
+        checkout,
+        guests: searchData.guestCount,
+        nights,
+        totalAmount,
+        paymentId: razorpay_payment_id,
+      });
 
-// Send email
-await transporter.sendMail({
-  from: `"${process.env.MAIL_FROM_NAME}" <${process.env.MAIL_USER}>`,
-  to: req.user.email,
-  subject: "Booking Confirmation",
-  text: `Hello ${req.user.username || ""},
-
-Your booking has been successfully confirmed!
-
-Booking Details
-------------------------
-Property: ${listing.title}
-Check-in: ${checkinDate}
-Check-out: ${checkoutDate}
-Guests: ${searchData.guestCount}
-
-Total Paid: ₹${totalAmount}
-
-Thank you for booking with us!
-
-Best Regards,
-${process.env.MAIL_FROM_NAME}`
-});
-
+      console.log("Booking confirmation email sent");
+    } catch (emailError) {
+      console.error(
+        "Brevo email error:",
+        emailError.response?.body || emailError.message,
+      );
+    }
 
     res.clearCookie("searchData");
 
-    return res.json({ 
-      success: true, 
+    return res.json({
+      success: true,
       bookingId: booking._id,
-      redirectUrl: `/listings/${listingId}` 
+      redirectUrl: `/listings/${listingId}`,
     });
-
   } catch (err) {
     console.error("Verify payment error:", err);
     res.status(500).json({ success: false });
