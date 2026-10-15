@@ -44,24 +44,14 @@ module.exports.createOrder = async (req, res) => {
       payment_capture: 1,
     });
 
-    // return res.json({
-    //   orderId: order.id,
-    //   amount: order.amount,
-    //   currency: order.currency,
-    //   nights,
-    //   baseAmount,
-    //   gstAmount,
-    //   totalAmount,
-    //   razorpayKey: process.env.RAZORPAY_KEY_ID,
-    //   listingId: listing._id,
-    //   userId
-    // });
-
-    res.render("bookings/checkout", {
-      listing,
-      order,
-      searchData,
+    return res.json({
+      orderId: order.id,
+      amount: order.amount,
+      currency: order.currency,
       nights,
+      baseAmount,
+      gstAmount,
+      totalAmount,
       razorpayKey: process.env.RAZORPAY_KEY_ID,
     });
   } catch (err) {
@@ -138,6 +128,18 @@ module.exports.verifyPayment = async (req, res) => {
 
     await booking.save();
 
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { $addToSet: { bookings: booking._id } },
+      { new: true },
+    );
+    if (!updatedUser) {
+      await booking.deleteOne();
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+
     // ✅ Send confirmation email
 
     try {
@@ -164,11 +166,7 @@ module.exports.verifyPayment = async (req, res) => {
 
     res.clearCookie("searchData");
 
-    return res.json({
-      success: true,
-      bookingId: booking._id,
-      redirectUrl: `/listings/${listingId}`,
-    });
+    return res.rendirect("/dashboard");
   } catch (err) {
     console.error("Verify payment error:", err);
     res.status(500).json({ success: false });

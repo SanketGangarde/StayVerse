@@ -1,37 +1,35 @@
 body {
-   font-family: "Poppins", sans-serif !important;
-   display: flex;
-   flex-direction: column;
-   min-height: 100vh;
-   background-color: #fff;
+  font-family: "Poppins", sans-serif !important;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #fff;
 }
 
 .container {
-    flex:1;
+  flex: 1;
 }
 
 /* Navbar Styling */
 .navbar {
-    /* Remove fixed height */
-    /* height: 10rem; */
-    
-    background-color: #f8f9fa;
-    padding: 1rem 2rem;  /* Add padding if needed for spacing */
-    display: flex;
-    flex-wrap: wrap;     /* Allow content to wrap if needed */
-    align-items: center; /* Align inner items vertically */
-}
+  /* Remove fixed height */
+  /* height: 10rem; */
 
+  background-color: #f8f9fa;
+  padding: 1rem 2rem; /* Add padding if needed for spacing */
+  display: flex;
+  flex-wrap: wrap; /* Allow content to wrap if needed */
+  align-items: center; /* Align inner items vertically */
+}
 
 .fa-compass {
-    color: #fe424d;
-    font-size: 2rem;
+  color: #fe424d;
+  font-size: 2rem;
 }
 
-.nav-link{
-    color: #222222 !important;
+.nav-link {
+  color: #222222 !important;
 }
-
 
 /* nav bar hamburger icon side bar pannel */
 .menu-box {
@@ -41,9 +39,9 @@ body {
   width: 220px;
   background: white;
   border-radius: 12px;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
   padding: 10px 0;
-  z-index: 1000;
+  z-index: 5000;
 }
 
 .menu-item {
@@ -65,113 +63,102 @@ body {
   display: none;
 }
 
-
-
-
-
 /* footer */
 
 .footer {
-    background: #f7f7f7;
-    font-size: 14px;
+  background: #f7f7f7;
+  font-size: 14px;
 }
 
 .footer a {
-    text-decoration: none;
-    color: #333;
+  text-decoration: none;
+  color: #333;
 }
 
 .footer a:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
 .footer h6 {
-    margin-bottom: 15px;
-}
- 
-.f-info {
-    background-color: #ebebeb;
-    height: 8rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    
-    
-    
-    
+  margin-bottom: 15px;
 }
 
-.f-info-socialMedia, .f-info-brand, .f-info-links {
-    width: 100%;  
-    line-height: 2rem;  
+.f-info {
+  background-color: #ebebeb;
+  height: 8rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.f-info-socialMedia,
+.f-info-brand,
+.f-info-links {
+  width: 100%;
+  line-height: 2rem;
 }
 
 .f-info-links a {
-    text-decoration: none;
-    color: #222222;
-    
+  text-decoration: none;
+  color: #222222;
 }
-.f-info-links a:hover{
-    text-decoration: underline;
+.f-info-links a:hover {
+  text-decoration: underline;
 }
 
 .f-info-socialMedia {
-    display: flex;
-    justify-content: center;
-    gap: 1rem; 
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
 }
 
 .f-info-socialMedia i {
-    font-size: 25px;
+  font-size: 25px;
 }
 
 .f-info-links {
-    display: flex;
-    justify-content: center;
-    gap: 1rem; 
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
 }
 /* -------------------------------------------------add new listing -------------------------------------------------- */
 
 .addAnotherImgBtn {
-    background-color: white;
-    color: black;
-    border: 1px solid black;
-    padding: 5px 12px;
-    font-size: 0.875rem; /* slightly smaller than normal */
-    font-weight: 500;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.2s ease, color 0.2s ease;
-    margin-top: 8px;
+  background-color: white;
+  color: black;
+  border: 1px solid black;
+  padding: 5px 12px;
+  font-size: 0.875rem; /* slightly smaller than normal */
+  font-weight: 500;
+  border-radius: 4px;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+  margin-top: 8px;
 }
 
 .addAnotherImgBtn:hover {
-    background-color: black;
-    color: white;
+  background-color: black;
+  color: white;
 }
-
-
-
 
 /* ------------------------------------------------ all listings -----------------------------------------------------  */
 .listing-card {
-    border: none !important;
-    margin-bottom: 2rem;
+  border: none !important;
+  margin-bottom: 2rem;
 }
 
-
-
-
 .card-img-top {
-    border-radius: 20px !important;
-    width: 100% !important;
-    object-fit: cover !important;
+  border-radius: 20px !important;
+  width: 100% !important;
+  object-fit: cover !important;
 }
 
 .card-body {
-    padding: 0 !important;
+  padding: 0 !important;
 }
 
 .card-text p {
@@ -179,69 +166,60 @@ body {
   font-weight: 400 !;
 }
 .card {
-    
-    --bs-card-bg:none !important;
+  --bs-card-bg: none !important;
 }
 .listing-link {
-    text-decoration: none;
-    --bs-card-bg:none;
+  text-decoration: none;
+  --bs-card-bg: none;
 }
-
 
 /* card effect  */
 .card-img-overlay {
-    opacity: 0;
-    --bs-card-bg: var(--bs-body-bg) none;
+  opacity: 0;
+  --bs-card-bg: var(--bs-body-bg) none;
 }
 
 .card-img-overlay:hover {
-    opacity: 0.2;
-    background-color: white;
+  opacity: 0.2;
+  background-color: white;
 }
-
 
 /* ---------------------------------- Show Page------------------------------------------  */
 
-
-
-#showImage { /* only one image in show.ejs */
-    width: 100%;
-  max-width: 800px;  /* Optional: Limit max width */
+#showImage {
+  /* only one image in show.ejs */
+  width: 100%;
+  max-width: 800px; /* Optional: Limit max width */
   height: 450px !important;
   max-height: 400px !important;
   object-fit: cover;
   display: block;
-  margin: 0 auto;    /* Center the image horizontally */
+  margin: 0 auto; /* Center the image horizontally */
   border-radius: 8px; /* Optional: Rounded corners */
 }
 
-
-
-
 .listing-gallery {
-   display: flex;
-   gap: 1rem;
+  display: flex;
+  gap: 1rem;
 }
 
 .large-image {
-    flex: 4;
-    
+  flex: 4;
 }
 
 .large-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 8px;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
 }
 
 .small-images-grid {
-
-    flex: 2;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);/* create two rows */
-    grid-template-rows: repeat(2, 1fr);/* create two columns*/
-    gap: 0.5rem;
+  flex: 2;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* create two rows */
+  grid-template-rows: repeat(2, 1fr); /* create two columns*/
+  gap: 0.5rem;
 }
 
 .small-image {
@@ -249,23 +227,21 @@ body {
 }
 
 .small-image img {
-   width: 100%;
-   height: 100%;
-   object-fit: cover;
-   border-radius: 8px;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
 }
-
-
 
 /* Overlay button */
 .overlay-button {
-    position: absolute;
-    inset: 0;
-    background-color: rgba(0, 0, 0, 0.4);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 8px;
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
 }
 
 /* .overlay-button button {
@@ -278,7 +254,6 @@ body {
     cursor: pointer;
     font-size: 0.5rem;
 } */
-
 
 .image-wrapper {
   position: relative;
@@ -323,7 +298,7 @@ body {
 /* ---------------------------show floating card ---------------------------------------- */
 
 .airbnb-floating-card {
- position: fixed !important;
+  position: fixed !important;
   top: 50% !important;
   right: 6rem !important;
   transform: translateY(-50%) !important;
@@ -333,8 +308,8 @@ body {
   border-radius: 16px;
   box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.15);
   padding: 1.5rem;
-  z-index: 9999;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  z-index: 99;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   box-sizing: border-box;
   /* Prevent parent flex/grid from affecting this element */
   flex: none !important;
@@ -382,11 +357,8 @@ body {
   }
 }
 
-
-
 /* ================= MOBILE FLOATING PAY CARD ================= */
 @media (max-width: 768px) {
-
   .airbnb-floating-card {
     position: fixed !important;
     bottom: 0;
@@ -398,13 +370,11 @@ body {
     width: 100%;
     max-width: 100%;
     border-radius: 16px 16px 0 0;
-    box-shadow: 0 -6px 20px rgba(0,0,0,0.15);
+    box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.15);
     padding: 12px 16px;
     z-index: 10000;
     background: #fff;
   }
-
-  
 
   /* Hide content when collapsed */
   .airbnb-floating-card.collapsed .card-content {
@@ -423,7 +393,7 @@ body {
   .pay-backdrop {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.35);
+    background: rgba(0, 0, 0, 0.35);
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.25s ease;
@@ -436,16 +406,13 @@ body {
   }
 }
 
-
 /* ================= MOBILE FLOATING PAY CARD ================= */
-
 
 /* MOBILE ONLY */
 @media (max-width: 767px) {
-
   :root {
     --card-radius: 16px;
-    --card-shadow: 0 -4px 16px rgba(0, 0, 0, 0.10);
+    --card-shadow: 0 -4px 16px rgba(0, 0, 0, 0.1);
     --transition: 0.4s cubic-bezier(0.22, 1, 0.36, 1);
     --airbnb-red: #ff385c;
   }
@@ -453,39 +420,44 @@ body {
   .airbnb-floating-card {
     display: block;
     position: fixed;
-    inset: auto 0 0 0;               /* top:auto; right:0; bottom:0; left:0; → full width */
-    width: 100%;                     /* explicit 100% width */
-    max-width: 100%;                 /* prevent any max-width inheritance */
-    margin: 0;                       /* no side margins */
+    inset: auto 0 0 0; /* top:auto; right:0; bottom:0; left:0; → full width */
+    width: 100%; /* explicit 100% width */
+    max-width: 100%; /* prevent any max-width inheritance */
+    margin: 0; /* no side margins */
     background: white;
     border-radius: var(--card-radius) var(--card-radius) 0 0;
     box-shadow: var(--card-shadow);
     z-index: 1001;
-    transition: transform var(--transition), max-height var(--transition);
+    transition:
+      transform var(--transition),
+      max-height var(--transition);
     overflow: hidden;
-    bottom: env(safe-area-inset-bottom, 0px);  /* respect notch / home indicator */
+    bottom: env(
+      safe-area-inset-bottom,
+      0px
+    ); /* respect notch / home indicator */
   }
 
   /* COLLAPSED STATE – full width bar at bottom */
   .airbnb-floating-card.collapsed {
-    max-height: 110px;               /* adjust if too tall/short */
-    padding: 0;                      /* no side padding on card itself */
+    max-height: 110px; /* adjust if too tall/short */
+    padding: 0; /* no side padding on card itself */
   }
 
   .airbnb-floating-card.collapsed .card-content {
-    padding: 12px 16px;              /* internal padding only – keeps content inset */
+    padding: 12px 16px; /* internal padding only – keeps content inset */
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
     gap: 16px;
     height: 100%;
-    margin: 0;                       /* ensure no extra margin */
+    margin: 0; /* ensure no extra margin */
   }
 
   /* Left: price + details */
   .airbnb-floating-card.collapsed .price-section {
     flex: 1;
-    min-width: 0;                    /* prevent overflow */
+    min-width: 0; /* prevent overflow */
   }
 
   .airbnb-floating-card.collapsed .price-section h5 {
@@ -517,7 +489,7 @@ body {
     background: var(--airbnb-red);
     color: white;
     border: none;
-    border-radius: 999px;            /* fully pill-shaped */
+    border-radius: 999px; /* fully pill-shaped */
     white-space: nowrap;
     flex-shrink: 0;
   }
@@ -547,7 +519,7 @@ body {
     display: block;
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.55);
+    background: rgba(0, 0, 0, 0.55);
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.4s ease;
@@ -570,80 +542,69 @@ body {
   }
 }
 
-
 /* ----------------------show galary model------------------------------ */
 
 .gallery-modal {
-    display: none;
-    position: fixed;
-    z-index: 1050;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    background-color: rgba(0,0,0,0.9);
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
+  display: none;
+  position: fixed;
+  z-index: 1050;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: rgba(0, 0, 0, 0.9);
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 
 .gallery-modal .modal-content {
-   max-width: 60%;
-   max-height: 60%;
-   border-radius: 8px;
+  max-width: 60%;
+  max-height: 60%;
+  border-radius: 8px;
 }
 
 .gallery-modal .close {
-   position: absolute;
-   top: 20px;
-   right: 35px;
-   color: #fff;
-   font-size: 40px;
-   font-weight: bold;
-   cursor: pointer;
+  position: absolute;
+  top: 20px;
+  right: 35px;
+  color: #fff;
+  font-size: 40px;
+  font-weight: bold;
+  cursor: pointer;
 }
 
 gallery-modal .nav-buttons {
-    margin-top: 20px;
+  margin-top: 20px;
 }
 
 .gallery-modal .nav-buttons button {
-   background-color: #fff;
-   color: black;
-   border: none;
-   padding: 10px 20px;
-   margin: 0 10px;
-   font-size: 20px;
-   cursor: pointer;
-   border-radius: 5px;
-   margin-top: 20px;
-
+  background-color: #fff;
+  color: black;
+  border: none;
+  padding: 10px 20px;
+  margin: 0 10px;
+  font-size: 20px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-top: 20px;
 }
 
-
-
-
-
-
-
-
-
 /*-------------------------Map CSS inbuilt---------------------------------------*/
-#map { 
-    height: 400px; 
-    width: 100%;
+#map {
+  height: 400px;
+  width: 100%;
 }
 
 .custom-marker {
-  font-family: 'Material Symbols Outlined';
+  font-family: "Material Symbols Outlined";
   font-size: 48px;
-  color: #FF385D;
+  color: #ff385d;
   line-height: 1;
   cursor: pointer;
   font-variation-settings:
-    'FILL' 1,    
-    'GRAD' 0,
-    'opsz' 40;
+    "FILL" 1,
+    "GRAD" 0,
+    "opsz" 40;
 }
-

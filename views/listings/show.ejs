@@ -599,57 +599,7 @@ document.addEventListener('keydown', (e) => {
 
 
 
-<!-- --------------------------bookinng form ---------------------- -->
-<script>
-  const form = document.getElementById("bookingForm");
 
-  form.addEventListener("submit", function (e) {
-    e.preventDefault();
-
-    const checkinInput = form.querySelector("#checkin");
-    const checkoutInput = form.querySelector("#checkout");
-    const guestsInput = form.querySelector("#guests");
-
-    const checkin = checkinInput?.value;
-    const checkout = checkoutInput?.value;
-    const guestCount = guestsInput?.value || 1;
-
-    if (!checkin || !checkout) {
-      alert("Please select check-in and check-out dates");
-      return;
-    }
-
-    // Convert to Date objects (important)
-    const checkinDate = new Date(checkin);
-    const checkoutDate = new Date(checkout);
-
-    checkinDate.setHours(0, 0, 0, 0);
-    checkoutDate.setHours(0, 0, 0, 0);
-
-    const MS_PER_DAY = 1000 * 60 * 60 * 24;
-    const nightCount = (checkoutDate - checkinDate) / MS_PER_DAY;
-
-    if (nightCount < 1) {
-      alert("Minimum stay is 1 night (checkout must be after check-in)");
-      return;
-    }
-
-    //  Store booking data (night-based logic)
-    const data = {
-      checkin,
-      checkout,
-      guestCount,
-      nights: nightCount
-    };
-
-    document.cookie = `searchData=${encodeURIComponent(
-      JSON.stringify(data)
-    )}; path=/; max-age=86400`;
-
-    // Redirect to booking page
-    window.location.href = "/listings/<%= listing._id %>/book";
-  });
-</script>
 
 
 
@@ -664,6 +614,7 @@ function refreshBlockedDates() {
 
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("bookingForm");
+  if (!form) return;
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -686,58 +637,53 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // Store booking data in cookie (so backend can read it)
-    document.cookie = `searchData=${encodeURIComponent(
-      JSON.stringify({ checkin, checkout, guestCount, nights })
-    )}; path=/; max-age=86400`;
+    try {
+      // Store booking data in cookie (so backend can read it)
+      document.cookie = `searchData=${encodeURIComponent(
+        JSON.stringify({ checkin, checkout, guestCount, nights })
+      )}; path=/; max-age=86400`;
 
-    const listingId = "<%= listing._id %>";
+      const listingId = "<%= listing._id %>";
+      const res = await fetch(`/listings/${listingId}/book`, {
+        method: "GET",
+        credentials: "include"
+      });
+      const data = await res.json();
 
-    //  Call backend to create Razorpay order
-    const res = await fetch(`/listings/${listingId}/book`, {
-      method: "GET",
-      credentials: "include"
-    });
-    const data = await res.json();
+      if (!res.ok || !data.orderId) {
+        throw new Error(data.error || "Could not create the payment order");
+      }
 
-    if (!data.orderId) {
-      return alert("Order creation failed");
-    }
+      const rzp = new Razorpay({
+        key: data.razorpayKey,
+        amount: data.amount,
+        currency: data.currency,
+        name: "Stay Booking",
+        description: `${data.nights} night stay`,
+        order_id: data.orderId,
+        handler: async (response) => {
+          const verifyRes = await fetch(`/listings/${listingId}/book/verify-payment`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify(response)
+          });
+          const result = await verifyRes.json();
 
-    //  Open Razorpay popup
-    const rzp = new Razorpay({
-      key: data.razorpayKey,
-      amount: data.amount,
-      currency: data.currency,
-      name: "Stay Booking",
-      description: `${data.nights} night stay`,
-      order_id: data.orderId,
-      handler: async (response) => {
-        //  Verify payment
-        const verifyRes = await fetch(`/listings/${listingId}/book/verify-payment`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify({ ...response, listingId })
-        });
-        const result = await verifyRes.json();
-
-        //  Redirect to success page if payment verified
-        if (result.success) {
-          // If redirecting back to listing, refresh blocked dates
-          if (result.redirectUrl && result.redirectUrl.includes('/listings/')) {
-            window.location.href = result.redirectUrl;
+          if (result.success) {
+            window.location.href = result.redirectUrl || "/bookings/success";
           } else {
-            window.location.href = "/bookings/success";
+            alert(result.message || "Payment verification failed");
           }
-        } else {
-          alert("Payment verification failed");
-        }
-      },
-      theme: { color: "#dc3545" }
-    });
+        },
+        theme: { color: "#dc3545" }
+      });
 
-    rzp.open();
+      rzp.open();
+    } catch (error) {
+      console.error("Unable to start Razorpay checkout:", error);
+      alert(error.message || "Unable to start payment. Please try again.");
+    }
   });
 });
 </script>

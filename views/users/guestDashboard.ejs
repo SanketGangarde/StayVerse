@@ -1,129 +1,541 @@
 <% layout("/layouts/dashboard") %>
 
+    <div class="main">
 
+        <!-- PROFILE -->
+        <div class="profile">
+            <div class="avatar">
+                <%= user.username.charAt(0).toUpperCase() %>
+            </div>
 
-<div class="main">
+            <div class="profile-info">
+                <h2>Welcome back, <%= user.username %>.</h2>
+                <p style="color: #777;">Member since 2024</p>
 
-    <!-- PROFILE -->
-    <div class="profile">
-        <div class="avatar">
-            <%= user.username.charAt(0).toUpperCase() %>
-        </div>
+                <div class="stats">
+                    <div class="stat-box">
+                        Total Bookings
+                        <br>
+                        <strong>
+                            <%= bookings.length %>
+                        </strong>
+                    </div>
 
-        <div>
-            <h2>Welcome back, <%= user.username %>.</h2>
-            <p style="color:#777;">Member since 2024</p>
+                    <div class="stat-box">
+                        Upcoming
+                        <br>
+                        <strong>
+                            <%= bookings.filter(b=> {
+                                const today = new Date();
+                                today.setHours(0, 0, 0, 0);
 
-            <div class="stats">
-                <div class="stat-box">
-                    Total Bookings <br><strong><%= bookings.length %></strong>
-                </div>
+                                const checkin = new Date(b.checkin);
+                                checkin.setHours(0, 0, 0, 0);
 
-                <div class="stat-box">
-                    Upcoming <br>
-                    <strong><%= bookings.filter(b => b.checkin > new Date()).length %></strong>
-                </div>
+                                return checkin > today;
+                                }).length %>
+                        </strong>
+                    </div>
 
-                <div class="stat-box">
-                    Total Spent <br>
-                    <strong>₹<%= bookings.reduce((s,b)=>s+b.amountPaid,0) %></strong>
+                    <div class="stat-box">
+                        Total Spent
+                        <br>
+                        <strong>
+                            ₹<%= bookings.reduce((sum, b)=> sum + (Number(b.amountPaid) || 0),
+                                0).toLocaleString("en-IN") %>
+                        </strong>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- FILTERS -->
-    <div class="filters">
-        <button onclick="filterBookings('all')" class="active">All</button>
-        <button onclick="filterBookings('upcoming')">Upcoming</button>
-        <button onclick="filterBookings('ongoing')">Ongoing</button>
-        <button onclick="filterBookings('completed')">Completed</button>
-    </div>
+        <!-- FILTER BUTTONS -->
+        <div class="filters">
+            <button type="button" class="active" onclick="filterBookings('all', this)">
+                All
+            </button>
 
-    <!-- CARDS -->
-    <div class="grid">
+            <button type="button" onclick="filterBookings('upcoming', this)">
+                Upcoming
+            </button>
 
-        <% bookings.forEach(booking => { %>
+            <button type="button" onclick="filterBookings('ongoing', this)">
+                Ongoing
+            </button>
 
-            <% 
-                let status="";
-                const today=new Date();
+            <button type="button" onclick="filterBookings('completed', this)">
+                Completed
+            </button>
+        </div>
 
-                if(booking.checkin > today) status="upcoming";
-                else if(booking.checkout >= today) status="ongoing";
-                else status="completed";
-            %>
+        <!-- BOOKING CARDS -->
+        <div class="grid">
 
-            <div class="card" data-status="<%= status %>">
+            <% bookings.forEach(booking=> { %>
 
-                <!-- IMAGE -->
-                <a href="/listings/<%= booking.listing._id %>" class="image-link">
-                    <img src="<%= booking.listing.images?.[0]?.url || 'https://via.placeholder.com/300' %>">
-                </a>
+                <% const today=new Date(); today.setHours(0, 0, 0, 0); const checkin=new Date(booking.checkin);
+                    checkin.setHours(0, 0, 0, 0); const checkout=new Date(booking.checkout); checkout.setHours(0, 0, 0,
+                    0); let status; if (checkin> today) {
+                    status = "upcoming";
+                    } else if (checkout > today) {
+                    status = "ongoing";
+                    } else {
+                    status = "completed";
+                    }
+                    %>
 
-                <!-- CONTENT -->
-                <div class="card-body">
+                    <div class="card" data-status="<%= status %>">
 
-                    <div>
-                        <span class="status <%= status %>"><%= status.toUpperCase() %></span>
+                        <!-- LISTING IMAGE -->
+                        <a href="/listings/<%= booking.listing?._id || '#' %>" class="image-link">
 
-                        <h3 style="font-size:small;"><%= booking.listing.title %></h3>
-
-                        <p class="info">
-                            <%= new Date(booking.checkin).toDateString() %> —
-                            <%= new Date(booking.checkout).toDateString() %>
-                        </p>
-
-                        <p class="info">
-                            <%= booking.guests %> Guests • <%= booking.nights %> Nights
-                        </p>
-
-                        <p><strong>₹<%= booking.amountPaid %></strong> total paid</p>
-                    </div>
-
-                    <div class="actions">
-                        <a href="/listings/<%= booking.listing._id %>" class="btn primary">
-                            View Details
+                            <img src="<%= booking.listing?.images?.[0]?.url || 'https://placehold.co/600x400?text=StayVerse' %>"
+                                alt="<%= booking.listing?.title || 'Booking property' %>" loading="lazy">
                         </a>
 
-                        <% if(status==="upcoming"){ %>
-                            <form action="/bookings/<%= booking._id %>?_method=DELETE" method="POST">
-                                <button class="btn secondary">Cancel</button>
-                            </form>
-                        <% } else if(status==="ongoing"){ %>
-                            <button class="btn secondary" disabled>In Progress</button>
-                        <% } else { %>
-                            <a href="/listings/<%= booking.listing._id %>" class="btn primary">
-                               Rate Us
-                            </a>
-                        <% } %>
+                        <!-- BOOKING DETAILS -->
+                        <div class="card-body">
+
+                            <div class="booking-info">
+
+                                <span class="status <%= status %>">
+                                    <%= status.toUpperCase() %>
+                                </span>
+
+                                <h3>
+                                    <%= booking.listing?.title || "Property unavailable" %>
+                                </h3>
+
+                                <p class="info">
+                                    <%= checkin.toDateString() %>
+                                        —
+                                        <%= checkout.toDateString() %>
+                                </p>
+
+                                <p class="info">
+                                    <%= booking.guests %> Guests
+                                        &bull;
+                                        <%= booking.nights %> Nights
+                                </p>
+
+                                <p>
+                                    <strong>
+                                        ₹<%= (Number(booking.amountPaid) || 0).toLocaleString("en-IN") %>
+                                    </strong>
+                                    total paid
+                                </p>
+
+                            </div>
+
+                            <!-- ACTIONS -->
+                            <div class="actions">
+
+                                <% if (booking.listing?._id) { %>
+                                    <a href="/listings/<%= booking.listing._id %>" class="btn primary">
+                                        View Details
+                                    </a>
+                                    <% } %>
+
+                                        <% if (status==="upcoming" ) { %>
+
+                                            <form action="/bookings/<%= booking._id %>?_method=DELETE" method="POST"
+                                                onsubmit="return confirm('Are you sure you want to cancel this booking?')">
+
+                                                <button type="submit" class="btn secondary">
+                                                    Cancel
+                                                </button>
+                                            </form>
+
+                                            <% } else if (status==="ongoing" ) { %>
+
+                                                <button type="button" class="btn secondary" disabled>
+                                                    In Progress
+                                                </button>
+
+                                                <% } else { %>
+
+                                                    <% if (booking.listing?._id) { %>
+                                                        <a href="/listings/<%= booking.listing._id %>"
+                                                            class="btn primary">
+                                                            Rate Us
+                                                        </a>
+                                                        <% } %>
+
+                                                            <% } %>
+
+                            </div>
+
+                        </div>
                     </div>
 
-                </div>
-            </div>
+                    <% }) %>
 
-        <% }) %>
+                        <!-- EMPTY STATE -->
+                        <% if (bookings.length===0) { %>
+                            <div class="empty-state">
+                                <h3>No bookings yet</h3>
+                                <p>Your stays will appear here after you make a booking.</p>
+                                <a href="/listings" class="btn primary">
+                                    Explore Stays
+                                </a>
+                            </div>
+                            <% } %>
 
+        </div>
     </div>
 
-</div>
+    <!-- FILTER FUNCTIONALITY -->
+    <script>
+        function filterBookings(type, button) {
+            const cards = document.querySelectorAll(".grid .card");
+            const buttons = document.querySelectorAll(".filters button");
 
-<script>
-function filterBookings(type){
-    const cards=document.querySelectorAll(".card");
-    const buttons=document.querySelectorAll(".filters button");
+            // Highlight the selected filter
+            buttons.forEach(function (btn) {
+                btn.classList.remove("active");
+            });
 
-    buttons.forEach(btn=>btn.classList.remove("active"));
-    event.target.classList.add("active");
+            button.classList.add("active");
 
-    cards.forEach(card=>{
-        const status=card.dataset.status;
+            // Show or hide booking cards
+            cards.forEach(function (card) {
+                const status = card.dataset.status;
+                const shouldShow = type === "all" || status === type;
 
-        if(type==="all"||status===type){
-            card.style.display="flex";
-        } else {
-            card.style.display="none";
+                card.hidden = !shouldShow;
+            });
         }
-    });
-}
-</script>
+    </script>
+
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f7f7f7;
+            color: #222;
+        }
+
+        .main {
+            max-width: 1100px;
+            margin: 80px auto;
+            padding: 20px;
+        }
+
+        /* PROFILE */
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background: #eee;
+            padding: 25px;
+            border-radius: 20px;
+        }
+
+        .avatar {
+            flex-shrink: 0;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #e0c3a3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #555;
+            font-size: 28px;
+        }
+
+        .profile-info h2 {
+            margin: 0 0 4px;
+        }
+
+        .profile-info p {
+            margin: 0;
+        }
+
+        .stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 12px;
+        }
+
+        .stat-box {
+            background: #fff;
+            padding: 10px 15px;
+            border-radius: 12px;
+            font-size: 14px;
+            line-height: 1.5;
+            min-width: 110px;
+        }
+
+        .stat-box strong {
+            font-size: 18px;
+        }
+
+        /* FILTERS */
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .filters button {
+            padding: 8px 18px;
+            border-radius: 20px;
+            border: none;
+            background: #ddd;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .filters button:hover {
+            background: #ccc;
+        }
+
+        .filters button.active {
+            background: #b1202d;
+            color: #fff;
+        }
+
+        /* GRID */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        /* CARD */
+        .card {
+            display: flex;
+            flex-direction: row;
+            background: #fff;
+            border-radius: 20px;
+            overflow: hidden;
+            min-height: 180px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+        }
+
+        /* IMAGE */
+        .image-link {
+            flex: 0 0 35%;
+            max-width: 35%;
+            display: block;
+        }
+
+        .image-link img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* CONTENT */
+        .card-body {
+            flex: 1;
+            min-width: 0;
+            padding: 18px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 10px;
+            margin-left: 10px;
+            margin-bottom: 10px;
+        }
+
+        .booking-info h3 {
+            margin: 4px 0 8px;
+
+            font-size: 17px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .booking-info p {
+            margin: 3px 0;
+            font-size: 13px;
+        }
+
+        .booking-info .info {
+            color: #666;
+        }
+
+        /* STATUS */
+        .status {
+            display: inline-block;
+            font-size: 11px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+
+        .upcoming {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        .ongoing {
+            background: #ffd6d6;
+            color: #a11;
+        }
+
+        .completed {
+            background: #e6ccff;
+            color: #5a2a82;
+        }
+
+        /* BUTTONS */
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .actions form {
+            margin: 0;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 7px 14px;
+            border-radius: 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        .btn:hover {
+            opacity: 0.85;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .primary {
+            background: #b1202d;
+            color: #fff;
+        }
+
+        .secondary {
+            background: #eee;
+            color: #222;
+        }
+
+        /* EMPTY STATE */
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            background: #fff;
+            padding: 50px 20px;
+            border-radius: 20px;
+        }
+
+        .empty-state h3 {
+            margin: 0 0 8px;
+        }
+
+        .empty-state p {
+            color: #777;
+            margin: 0 0 18px;
+        }
+
+        /* TABLET */
+        @media (max-width: 992px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .image-link {
+                flex: 0 0 30%;
+                max-width: 30%;
+            }
+
+            .avatar {
+                width: 64px;
+                height: 64px;
+                font-size: 22px;
+            }
+        }
+
+        /* MOBILE */
+        @media (max-width: 576px) {
+            .main {
+                margin: 60px auto;
+                padding: 10px;
+            }
+
+            .profile {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+                padding: 15px;
+            }
+
+            .profile-info {
+                width: 100%;
+            }
+
+            .stats {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .stat-box {
+                width: 100%;
+            }
+
+            .filters button {
+                font-size: 12px;
+                padding: 6px 12px;
+            }
+
+            .card {
+                flex-direction: column;
+            }
+
+            .image-link {
+                flex: none;
+                max-width: 100%;
+                width: 100%;
+                height: 180px;
+            }
+
+            .card-body {
+                padding: 14px;
+            }
+
+            .actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .actions form {
+                width: 100%;
+            }
+
+            .btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
